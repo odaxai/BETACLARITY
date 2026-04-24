@@ -1,0 +1,161 @@
+# ==========================================================================
+#  BETACLARITY Interface — NVIDIA GPU image (CUDA 12.1, PyTorch 2.5)
+#  Frontend (React) + Backend (Flask + PyTorch CUDA + ONNX Runtime GPU)
+#
+#  Use this image on a Linux host with an NVIDIA GPU and the
+#  NVIDIA Container Toolkit. Run with:
+#
+#      docker run --gpus all -p 8080:80 docker.io/odaxai/betaclarity:cuda
+#
+#  For Apple Silicon (M-series) NPU access, do NOT use this image — Docker
+#  Desktop on macOS does not expose the Apple Neural Engine. Use the native
+#  macOS path instead: see scripts/run_native_macos.sh
+# ==========================================================================
+
+# ---- Stage 1: build the React frontend ----
+FROM node:20-alpine AS frontend-build
+WORKDIR /build
+
+COPY package.json package-lock.json* ./
+RUN npm ci --ignore-scripts 2>/dev/null || npm install
+
+COPY webpack.config.js ./
+COPY src/ ./src/
+COPY public/ ./public/
+COPY components/ ./components/
+COPY index.html ./
+
+ENV NODE_ENV=production \
+    REACT_APP_API_URL=
+
+RUN npx webpack --mode production
+
+
+# ---- Stage 2: CUDA-enabled Python runtime ----
+FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04 AS runtime
+
+WORKDIR /app
+
+ENV PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    BETACLARITY_BACKEND=pytorch-cuda \
+    BETACLARITY_HF_REPO=OdaxAI/betaclarity-betasr \
+    BETACLARITY_HF_FILE=model.pth \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        python3.11 python3-pip python3.11-distutils \
+        libgl1 libglib2.0-0 libgomp1 \
+        curl nginx \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY backend/requirements.txt /tmp/requirements.txt
+RUN sed -i '/^torch/d; /^torchvision/d; /^pytorch/d; /^cuda/d; /^opencv-python$/d' /tmp/requirements.txt && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    # CUDA 12.1 PyTorch wheels
+    pip install --index-url https://download.pytorch.org/whl/cu121 \
+        torch==2.5.* torchvision==0.20.* && \
+    # ONNX Runtime GPU + diffusers
+    pip install \
+        onnxruntime-gpu==1.20.* \
+        diffusers \
+        accelerate \
+        transformers \
+        huggingface-hub \
+        gunicorn \
+        opencv-python-headless && \
+    rm /tmp/requirements.txt && \
+    rm -rf /root/.cache/pip /tmp/*
+
+COPY backend/ ./backend/
+COPY --from=frontend-build /build/dist /app/static
+
+RUN mkdir -p /app/backend/sessions /app/backend/model
+
+COPY <<'NGINX_CONF' /etc/nginx/sites-available/default
+server {
+    listen 80;
+    server_name _;
+
+    root /app/static;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location ~ ^/(api|health|create_session|load_sample|upload_file|get_preprocessed|process_distortion|get_distorted|apply_denoising|get_denoised|compute_metrics|get_sample_images|load_sample_image|enhance|chat|export_measurement|system-info)(/.*)?$ {
+        proxy_pass http://127.0.0.1:8001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 600s;
+        proxy_send_timeout 600s;
+        client_max_body_size 100M;
+    }
+}
+NGINX_CONF
+
+COPY <<'ENTRYPOINT' /app/entrypoint.sh
+#!/bin/bash
+set -e
+
+echo "==============================================="
+echo "  BETACLARITY Interface (CUDA) starting..."
+echo "==============================================="
+echo "  Backend: ${BETACLARITY_BACKEND}"
+echo "  HF repo: ${BETACLARITY_HF_REPO}"
+nvidia-smi -L 2>/dev/null | head -4 || echo "  (no nvidia-smi visible — did you run with --gpus all?)"
+
+MODEL_DIR=/app/backend/model
+mkdir -p "$MODEL_DIR"
+MODEL_PATH="$MODEL_DIR/$BETACLARITY_HF_FILE"
+
+if [ ! -f "$MODEL_PATH" ]; then
+    echo "  Downloading $BETACLARITY_HF_FILE from $BETACLARITY_HF_REPO ..."
+    python - <<PYDL
+import os, sys
+from huggingface_hub import hf_hub_download
+try:
+    p = hf_hub_download(
+        repo_id=os.environ["BETACLARITY_HF_REPO"],
+        filename=os.environ["BETACLARITY_HF_FILE"],
+        local_dir="/app/backend/model",
+        token=os.environ.get("HUGGINGFACE_HUB_TOKEN"),
+    )
+    print(f"  Downloaded to {p}", flush=True)
+except Exception as e:
+    print(f"  WARNING: model download failed: {e}", file=sys.stderr)
+PYDL
+else
+    echo "  Model already present at $MODEL_PATH"
+fi
+
+echo "  Starting nginx (port 80) and gunicorn (port 8001)..."
+echo "==============================================="
+
+nginx
+
+cd /app/backend
+exec gunicorn app:app \
+    --bind 0.0.0.0:8001 \
+    --workers 1 \
+    --threads 4 \
+    --timeout 600 \
+    --access-logfile - \
+    --error-logfile -
+ENTRYPOINT
+RUN chmod +x /app/entrypoint.sh
+
+EXPOSE 80 8001
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:80/ && curl -f http://localhost:8001/health || exit 1
+
+ENTRYPOINT ["/app/entrypoint.sh"]

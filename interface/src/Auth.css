@@ -1,0 +1,341 @@
+/* ==================================
+   Apple-Inspired Auth Styles
+   ================================== */
+
+/* Reset + box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  height: 100%;
+  width: 100%;
+  background: #000; /* Sfondo nero */
+  color: #fff;       /* Testo bianco di default */
+}
+
+/* ==================================
+   Outer containers
+   ================================== */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #000;
+}
+
+.auth-outer-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* Anche qui, rimuoviamo il bianco */
+  background: none;
+}
+
+/* ==================================
+   Top header row (Apple-inspired)
+   ================================== */
+.auth-headerRow {
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  background: #000; /* Anche l'header nero */
+}
+
+/* Brand row */
+.auth-brandRow {
+  display: flex;
+  align-items: center;
+}
+
+/* Main brand name */
+.auth-brand {
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+/* Small pill next to brand */
+.auth-pill {
+  background: #000;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ==================================
+   Content wrapper => centers the card
+   ================================== */
+.auth-contentWrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+/* ==================================
+   The card
+   ================================== */
+.auth-card {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+/* Title / brand in the card */
+.auth-title {
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: -0.5px;
+}
+
+/* Subtitle / instructions */
+.auth-subtitle {
+  font-size: 0.95rem;
+  /* Più chiaro per visibilità su sfondo nero */
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+/* Error message box */
+.auth-error {
+  color: #ff4444;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ==================================
+   Form + inputs
+   ================================== */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.auth-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==================================
+   Primary button
+   ================================== */
+.auth-button {
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.auth-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ==================================
+   Divider => OR
+   ================================== */
+.auth-divider {
+  position: relative;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.auth-divider::before {
+  left: 0;
+}
+
+.auth-divider::after {
+  right: 0;
+}
+
+.auth-divider span {
+  background-color: #1a1a1a;
+  color: #666;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 0 10px;
+}
+
+/* ==================================
+   Google button
+   ================================== */
+.auth-google-button,
+.auth-googleBtn {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-google-button:hover,
+.auth-googleBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Google icon inside the button */
+.auth-googleIcon {
+  height: 20px;
+  width: auto;
+}
+
+/* ==================================
+   Footer text + links
+   ================================== */
+.auth-footer {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+.auth-link,
+.auth-linkHighlight {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 8px;
+}
+
+.auth-link:hover,
+.auth-linkHighlight:hover {
+  text-decoration: underline;
+}
+
+/* Header styling per la pagina di login */
+.header {
+  background: #000000;
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logo {
+  color: #FFFFFF;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.platform-badge {
+  background: #000000;
+  color: #FFFFFF;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.platform-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.google-button {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.google-button:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.auth-brand-container {
+  text-align: center;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-brand {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.auth-platform {
+  font-size: 12px;
+  padding: 3px 8px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 24px;
+}

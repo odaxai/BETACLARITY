@@ -1,0 +1,33 @@
+/* components/styles.css */
+.dicom-viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #111;
+    color: #fff;
+    height: 100vh;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: #222;
+    color: #fff;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f39c12;
+}
+
+.viewer-container {
+    border: 1px solid #333;
+    margin-top: 20px;
+    width: 800px;
+    height: 600px;
+    background-color: black;
+}

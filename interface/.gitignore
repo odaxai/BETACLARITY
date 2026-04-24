@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.env
+.DS_Store
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker export files (too large for Git)
+*.tar
+docker_export_*/
+!docker_export_*/docker-compose.cluster.yml
+!docker_export_*/Dockerfile.*
+!docker_export_*/deploy_on_cluster.sh
+!docker_export_*/DOCKER_EXPORT_GUIDE.md
+
+# Large model files
+*.pth
+*.bin
+*.safetensors
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+node_modules

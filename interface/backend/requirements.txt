@@ -1,0 +1,9 @@
+Flask
+flask-cors
+pydicom
+numpy
+scikit-image
+opencv-python
+Pillow
+matplotlib
+psutil

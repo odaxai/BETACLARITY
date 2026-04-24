@@ -1,0 +1,23 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+
+# Models and sessions (created at runtime)
+sessions/*
+# model/*.pth  # COMMENTED OUT - we need to include our custom model.pth
+*.log
+
+# Development files
+.vscode
+.idea
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git 

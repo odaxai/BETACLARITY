@@ -1,0 +1,88 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+*.egg-info/
+*.egg
+wheels/
+sdist/
+
+# Virtual environments
+.env
+.venv/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+htmlcov/
+coverage.xml
+
+# Model weights and checkpoints
+*.pth
+*.pt
+*.onnx
+*.safetensors
+*.bin
+
+# Dataset and outputs
+dataset/
+data/
+outputs/
+logs/
+runs/
+tb_logs*/
+wandb/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets and credentials
+*.pem
+*.key
+credentials.*
+secrets.*
+.env
+.env.*
+
+# Node / frontend
+node_modules/
+package-lock.json
+
+# Interface runtime data
+interface/backend/sessions/
+interface/backend/model/
+
+# Sample medical images are NOT part of this repository.
+# Pre-built demo images from public datasets (BraTS, ChestX-ray, EchoNet…)
+# must NOT be committed to this repo or bundled in Docker images.
+# Users upload their own DICOM / PNG / JPEG files via the UI.
+interface/public/imgs/
+interface/backend/public/imgs/
+
+# Training artifacts
+save.txt
+training_report.html
+training_plot.png
+*.log
+
+# Hugging Face cache
+.cache/

@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*
+*.dockerignore
+
+# Node modules (will be installed in container)
+node_modules
+npm-debug.log*
+
+# Build outputs
+dist
+build
+
+# Development files
+.vscode
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime data
+backend/sessions/*
+backend/*.log
+backend/__pycache__
+backend/model/*.pth
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history 

@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "betaclarity-betasr"
+version = "0.1.0"
+description = "Latent diffusion super-resolution and denoising for medical imaging"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+authors = [
+    {name = "OdaxAI SRL", email = "hello@odaxai.com"},
+    {name = "Nicolò Savioli"},
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
+keywords = ["super-resolution", "denoising", "medical-imaging", "diffusion", "deep-learning"]
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "diffusers>=0.25.0",
+    "transformers>=4.36.0",
+    "accelerate>=0.25.0",
+    "scikit-image>=0.22.0",
+    "matplotlib>=3.8.0",
+    "tqdm>=4.66.0",
+    "pywavelets>=1.5.0",
+    "pillow>=10.0.0",
+    "numpy>=1.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://odaxai.com"
+Repository = "https://github.com/odaxai/BETACLARITY"
+Documentation = "https://odaxai.com/research/betaclarity"
+Issues = "https://github.com/odaxai/BETACLARITY/issues"
+Models = "https://huggingface.co/OdaxAI/betaclarity-betasr"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

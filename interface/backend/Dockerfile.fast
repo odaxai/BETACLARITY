@@ -1,0 +1,63 @@
+# Fast Backend Dockerfile for BetaSR Interface (GPU-enabled)
+# Using Python base image for speed
+FROM python:3.10-slim
+
+# Set working directory
+WORKDIR /app
+
+# Set environment variables
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+ENV CUDA_DEVICE_ORDER=PCI_BUS_ID
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    libfontconfig1 \
+    curl \
+    lsof \
+    procps \
+    wget \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY requirements.txt .
+
+# Install Python dependencies - PyTorch with CUDA support
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir diffusers transformers accelerate huggingface-hub
+
+# Copy the application code and medical images
+COPY . .
+
+# Explicitly copy the custom model to ensure it's included
+COPY model/model.pth model/model.pth
+
+# Ensure medical images are included
+COPY public/ public/
+
+# Create necessary directories (no need for model dir as it's already copied)
+RUN mkdir -p sessions
+
+# Test PyTorch installation (CUDA will be available when container runs with GPU access)
+RUN python -c "import torch; print(f'PyTorch version: {torch.__version__}'); print(f'CUDA version: {torch.version.cuda}')"
+
+# Expose the port (8001 per backend locale)
+EXPOSE 8001
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
+    CMD curl -f http://localhost:8001/health || exit 1
+
+# Start the application
+CMD ["python", "app.py"] 

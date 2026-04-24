@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+  }
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  .app-header {
+    background-color: #000;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+  }
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+  }
+  .main-content {
+    display: flex;
+    flex: 1;
+  }
+  .sidebar {
+    width: 250px;
+    background: #1e1e1e;
+    padding: 20px;
+  }
+  .control-group {
+    margin-bottom: 15px;
+  }
+  .control-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  .control-group select, .control-group input[type="file"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
